@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { useEditorStore } from '@/application/store/editorStore';
 import { getClipDuration } from '@/domain/entities/Clip';
 import { getMaxTransitionDuration, type TransitionType } from '@/domain/entities/Transition';
@@ -23,6 +23,48 @@ export function Timeline() {
 
   const clips = getClipsInOrder();
   const totalDuration = getTotalDuration();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  // Update scroll button visibility
+  const updateScrollButtons = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    setCanScrollLeft(container.scrollLeft > 0);
+    setCanScrollRight(
+      container.scrollLeft < container.scrollWidth - container.clientWidth
+    );
+  }, []);
+
+  // Scroll left/right functions
+  const scrollLeft = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    container.scrollBy({ left: -300, behavior: 'smooth' });
+  }, []);
+
+  const scrollRight = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    container.scrollBy({ left: 300, behavior: 'smooth' });
+  }, []);
+
+  // Update scroll buttons on mount and when clips change
+  useEffect(() => {
+    updateScrollButtons();
+  }, [clips, updateScrollButtons]);
+
+  // Listen for scroll events
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => updateScrollButtons();
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [updateScrollButtons]);
 
   // Handler for setting a transition between clips
   const handleSetTransition = useCallback(
@@ -79,57 +121,86 @@ export function Timeline() {
       </div>
 
       {/* Timeline content */}
-      <div className="flex-1 overflow-x-auto overflow-y-hidden">
-        {clips.length === 0 ? (
-          <div className="flex items-center justify-center h-full p-4">
-            <div className="w-full max-w-md">
-              <VideoDropzone />
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1 p-4 min-w-max">
-            {clips.map((clip, index) => {
-              const nextClip = clips[index + 1];
-              const transition = nextClip
-                ? getTransition(clip.id, nextClip.id)
-                : null;
+      <div className="flex-1 relative overflow-hidden">
+        {/* Left scroll button */}
+        {canScrollLeft && (
+          <button
+            onClick={scrollLeft}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-zinc-800/90 hover:bg-zinc-700 text-zinc-300 rounded-full shadow-lg transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
 
-              // Calculate max transition duration based on clip lengths
-              const maxDuration = nextClip
-                ? getMaxTransitionDuration(
-                    getClipDuration(clip),
-                    getClipDuration(nextClip)
-                  )
-                : 0;
+        {/* Right scroll button */}
+        {canScrollRight && (
+          <button
+            onClick={scrollRight}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-zinc-800/90 hover:bg-zinc-700 text-zinc-300 rounded-full shadow-lg transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
 
-              return (
-                <div key={clip.id} className="flex items-center gap-1">
-                  <TimelineClip clip={clip} index={index} />
-
-                  {/* Show transition picker between clips */}
-                  {nextClip && (
-                    <TransitionPicker
-                      currentType={transition?.type ?? null}
-                      currentDuration={transition?.duration ?? 1}
-                      maxDuration={maxDuration}
-                      onSelect={(type, duration) =>
-                        handleSetTransition(clip.id, nextClip.id, type, duration)
-                      }
-                      onRemove={() => handleRemoveTransition(clip.id, nextClip.id)}
-                    />
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Add more button */}
-            <div className="flex-shrink-0 w-32 ml-2">
-              <div className="relative">
+        <div
+          ref={scrollContainerRef}
+          className="h-full overflow-x-auto overflow-y-hidden"
+        >
+          {clips.length === 0 ? (
+            <div className="flex items-center justify-center h-full p-4">
+              <div className="w-full max-w-md">
                 <VideoDropzone />
               </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex items-center gap-1 p-4 min-w-max">
+              {clips.map((clip, index) => {
+                const nextClip = clips[index + 1];
+                const transition = nextClip
+                  ? getTransition(clip.id, nextClip.id)
+                  : null;
+
+                // Calculate max transition duration based on clip lengths
+                const maxDuration = nextClip
+                  ? getMaxTransitionDuration(
+                      getClipDuration(clip),
+                      getClipDuration(nextClip)
+                    )
+                  : 0;
+
+                return (
+                  <div key={clip.id} className="flex items-center gap-1">
+                    <TimelineClip clip={clip} index={index} />
+
+                    {/* Show transition picker between clips */}
+                    {nextClip && (
+                      <TransitionPicker
+                        currentType={transition?.type ?? null}
+                        currentDuration={transition?.duration ?? 1}
+                        maxDuration={maxDuration}
+                        onSelect={(type, duration) =>
+                          handleSetTransition(clip.id, nextClip.id, type, duration)
+                        }
+                        onRemove={() => handleRemoveTransition(clip.id, nextClip.id)}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Add more button */}
+              <div className="flex-shrink-0 w-32 ml-2">
+                <div className="relative">
+                  <VideoDropzone />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
