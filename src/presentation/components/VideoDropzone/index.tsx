@@ -54,8 +54,9 @@ export function VideoDropzone() {
     <div
       className={`
         relative flex flex-col items-center justify-center
-        p-8 border-2 border-dashed rounded-lg
+        p-2 border-2 border-dashed rounded-lg
         transition-colors duration-200 cursor-pointer
+        h-42
         ${isDragging 
           ? 'border-indigo-500 bg-indigo-500/10' 
           : 'border-zinc-600 hover:border-zinc-500 bg-zinc-800/50'

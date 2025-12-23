@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import type { Clip } from '@/domain/entities/Clip';
-import { createClip } from '@/domain/entities/Clip';
+import { createClip, getClipDuration } from '@/domain/entities/Clip';
 import type { Timeline } from '@/domain/entities/Timeline';
 import {
   createTimeline,
@@ -9,7 +9,16 @@ import {
   removeClipFromTimeline,
   moveClipInTimeline,
   getTimelineDuration,
+  setTransition as setTimelineTransition,
+  removeTransition as removeTimelineTransition,
+  getTransitionBetween,
 } from '@/domain/entities/Timeline';
+import type { Transition, TransitionType } from '@/domain/entities/Transition';
+import {
+  createTransition,
+  getMaxTransitionDuration,
+  DEFAULT_TRANSITION_DURATION,
+} from '@/domain/entities/Transition';
 import type { EntityId, OperationStatus, Progress, Seconds, VideoMetadata } from '@/domain/types';
 
 /**
@@ -53,6 +62,16 @@ interface EditorActions {
 
   // Timeline actions
   moveClip: (clipId: EntityId, newIndex: number) => void;
+
+  // Transition actions
+  setTransition: (
+    fromClipId: EntityId,
+    toClipId: EntityId,
+    type: TransitionType,
+    duration?: Seconds
+  ) => void;
+  removeTransition: (fromClipId: EntityId, toClipId: EntityId) => void;
+  getTransition: (fromClipId: EntityId, toClipId: EntityId) => Transition | null;
 
   // Playback actions
   play: () => void;
@@ -126,6 +145,46 @@ export const useEditorStore = create<EditorStore>()(
         set((state) => ({
           timeline: moveClipInTimeline(state.timeline, clipId, newIndex),
         }));
+      },
+
+      // Transition actions
+      setTransition: (fromClipId, toClipId, type, duration) => {
+        set((state) => {
+          const fromClip = state.clips.get(fromClipId);
+          const toClip = state.clips.get(toClipId);
+
+          if (!fromClip || !toClip) {
+            console.warn('Cannot set transition: clips not found');
+            return state;
+          }
+
+          // Calculate valid duration
+          const fromDuration = getClipDuration(fromClip);
+          const toDuration = getClipDuration(toClip);
+          const maxDuration = getMaxTransitionDuration(fromDuration, toDuration);
+          const finalDuration = Math.min(duration ?? DEFAULT_TRANSITION_DURATION, maxDuration);
+
+          const transition = createTransition({
+            id: `transition_${fromClipId}_${toClipId}`,
+            type,
+            duration: finalDuration,
+          });
+
+          return {
+            timeline: setTimelineTransition(state.timeline, fromClipId, toClipId, transition),
+          };
+        });
+      },
+
+      removeTransition: (fromClipId, toClipId) => {
+        set((state) => ({
+          timeline: removeTimelineTransition(state.timeline, fromClipId, toClipId),
+        }));
+      },
+
+      getTransition: (fromClipId, toClipId) => {
+        const state = get();
+        return getTransitionBetween(state.timeline, fromClipId, toClipId);
       },
 
       // Playback actions
