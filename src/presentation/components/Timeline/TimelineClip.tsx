@@ -56,11 +56,11 @@ export function TimelineClip({ clip, index }: TimelineClipProps) {
       style={{ width: Math.max(120, duration * 30) }}
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video bg-zinc-800">
+      <div className="relative h-16 bg-zinc-800">
         <img 
           src={clip.thumbnailUrl} 
           alt={clip.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
         
         {/* Clip number badge */}
