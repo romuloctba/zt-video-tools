@@ -88,7 +88,7 @@ export function VideoDropzone() {
         />
       </svg>
       
-      <p className={`text-lg font-medium ${isDragging ? 'text-indigo-300' : 'text-zinc-300'}`}>
+      <p className={`text-sm font-medium leading-tight ${isDragging ? 'text-indigo-300' : 'text-zinc-300'}`}>
         {isDragging ? 'Drop videos here' : 'Drop videos or click to browse'}
       </p>
       
