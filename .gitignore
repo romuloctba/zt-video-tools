@@ -1,0 +1,55 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Vite build output
+dist/
+
+# pnpm
+.pnpm-store/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Tailwind JIT
+.tailwind-cache/
+
+# Coverage
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor backups
+*~
+
+# Misc
+Thumbs.db
+*.swp
+*.swo
+
+# Optional: ignore test output
+test-results/
