@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useEditorStore } from '@/application/store/editorStore';
 import { getClipDuration } from '@/domain/entities/Clip';
 import { getMaxTransitionDuration, type TransitionType } from '@/domain/entities/Transition';
@@ -11,6 +12,7 @@ import { TransitionPicker } from '../TransitionPicker';
  * Timeline - Main timeline view with clips and transitions
  */
 export function Timeline() {
+  const { t } = useTranslation();
   const {
     getClipsInOrder,
     getTotalDuration,
@@ -87,13 +89,13 @@ export function Timeline() {
       {/* Timeline header */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-700">
         <div className="flex items-center gap-4">
-          <h2 className="text-sm font-medium text-zinc-300">Timeline</h2>
+          <h2 className="text-sm font-medium text-zinc-300">{t('timeline.title')}</h2>
           <span className="text-xs text-zinc-500">
-            {clips.length} clip{clips.length !== 1 ? 's' : ''} • {formatTime(totalDuration)}
+            {t('timeline.clipCount', { count: clips.length })} • {formatTime(totalDuration)}
           </span>
           {timeline.transitions.size > 0 && (
             <span className="text-xs text-indigo-400">
-              {timeline.transitions.size} transition{timeline.transitions.size !== 1 ? 's' : ''}
+              {t('timeline.transitionCount', { count: timeline.transitions.size })}
             </span>
           )}
         </div>
@@ -115,7 +117,7 @@ export function Timeline() {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
               />
             </svg>
-            Importing...
+            {t('timeline.importing')}
           </div>
         )}
       </div>

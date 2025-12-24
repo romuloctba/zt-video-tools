@@ -12,9 +12,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "i18next": "^25.7.3",
     "idb": "^8.0.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-i18next": "^16.5.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

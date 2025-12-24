@@ -1,4 +1,5 @@
 import { useCallback, useState, type DragEvent, type ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useVideoImport } from '@/application/hooks/useVideoImport';
 import { VIDEO_ACCEPT } from '@/shared/utils/file';
 
@@ -6,6 +7,7 @@ import { VIDEO_ACCEPT } from '@/shared/utils/file';
  * VideoDropzone - Drag & drop area for importing video files
  */
 export function VideoDropzone() {
+  const { t } = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { importFiles } = useVideoImport();
@@ -31,9 +33,9 @@ export function VideoDropzone() {
     try {
       await importFiles(files);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to import files');
+      setError(err instanceof Error ? err.message : t('dropzone.importFailed'));
     }
-  }, [importFiles]);
+  }, [importFiles, t]);
   
   const handleFileInput = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     setError(null);
@@ -43,12 +45,12 @@ export function VideoDropzone() {
     try {
       await importFiles(files);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to import files');
+      setError(err instanceof Error ? err.message : t('dropzone.importFailed'));
     }
     
     // Reset input
     e.target.value = '';
-  }, [importFiles]);
+  }, [importFiles, t]);
   
   return (
     <div
@@ -89,11 +91,11 @@ export function VideoDropzone() {
       </svg>
       
       <p className={`text-sm font-medium leading-tight ${isDragging ? 'text-indigo-300' : 'text-zinc-300'}`}>
-        {isDragging ? 'Drop videos here' : 'Drop videos or click to browse'}
+        {isDragging ? t('dropzone.dropHere') : t('dropzone.dropOrBrowse')}
       </p>
       
       <p className="mt-2 text-sm text-zinc-500">
-        Supports MP4, WebM, MOV, AVI, MKV
+        {t('dropzone.supportedFormats')}
       </p>
       
       {error && (

@@ -3,9 +3,12 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
+const ENV = process.env.NODE_ENV || 'development';
+console.log('VITE_BASE_PATH:', ENV);
+
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH || '/video-tools/',
+  base: ENV === 'development' ? '/' : '/video-tools/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

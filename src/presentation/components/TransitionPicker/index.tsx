@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TransitionType } from '@/domain/entities/Transition';
 import { TRANSITION_DURATIONS, DEFAULT_TRANSITION_DURATION } from '@/domain/entities/Transition';
 import type { Seconds } from '@/domain/types';
@@ -28,6 +29,7 @@ export function TransitionPicker({
   onSelect,
   onRemove,
 }: TransitionPickerProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(
     currentDuration || DEFAULT_TRANSITION_DURATION
@@ -74,7 +76,7 @@ export function TransitionPicker({
               : 'bg-zinc-800 border-zinc-600 hover:border-indigo-500 hover:bg-zinc-700'
           }
         `}
-        title={hasTransition ? `${currentType} (${currentDuration}s)` : 'Add transition'}
+        title={hasTransition ? `${currentType} (${currentDuration}s)` : t('transitions.addTransition')}
       >
         {hasTransition ? (
           <TransitionIcon type={currentType!} className="w-3 h-3 text-white" />
@@ -108,32 +110,32 @@ export function TransitionPicker({
           <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-20">
             <div className="bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl p-3 min-w-[200px]">
               <div className="text-xs font-medium text-zinc-400 mb-2">
-                Transition Type
+                {t('transitions.type')}
               </div>
 
               {/* Transition Type Options */}
               <div className="grid grid-cols-2 gap-1.5 mb-3">
                 <TransitionOption
                   type="none"
-                  label="None"
+                  label={t('transitions.none')}
                   isSelected={!hasTransition}
                   onClick={() => handleTypeSelect('none')}
                 />
                 <TransitionOption
                   type="crossfade"
-                  label="Crossfade"
+                  label={t('transitions.crossfade')}
                   isSelected={currentType === 'crossfade'}
                   onClick={() => handleTypeSelect('crossfade')}
                 />
                 <TransitionOption
                   type="fadeToBlack"
-                  label="Fade Black"
+                  label={t('transitions.fadeBlack')}
                   isSelected={currentType === 'fadeToBlack'}
                   onClick={() => handleTypeSelect('fadeToBlack')}
                 />
                 <TransitionOption
                   type="fadeToWhite"
-                  label="Fade White"
+                  label={t('transitions.fadeWhite')}
                   isSelected={currentType === 'fadeToWhite'}
                   onClick={() => handleTypeSelect('fadeToWhite')}
                 />
@@ -143,7 +145,7 @@ export function TransitionPicker({
               {hasTransition && availableDurations.length > 0 && (
                 <>
                   <div className="text-xs font-medium text-zinc-400 mb-2">
-                    Duration
+                    {t('transitions.duration')}
                   </div>
                   <div className="flex gap-1.5">
                     {availableDurations.map((duration) => (
@@ -169,7 +171,7 @@ export function TransitionPicker({
               {/* Warning if max duration is very small */}
               {maxDuration < 0.5 && (
                 <div className="mt-2 text-xs text-amber-400">
-                  Clips too short for transitions
+                  {t('transitions.clipsTooShort')}
                 </div>
               )}
             </div>

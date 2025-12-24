@@ -1,0 +1,34 @@
+{
+  "common": {
+    "appName": "Video Tools"
+  },
+  "dropzone": {
+    "dropHere": "Solte os vídeos aqui",
+    "dropOrBrowse": "Solte vídeos ou clique para procurar",
+    "supportedFormats": "Suporta MP4, WebM, MOV, AVI, MKV",
+    "importFailed": "Falha ao importar arquivos"
+  },
+  "export": {
+    "exporting": "Exportando...",
+    "exportVideo": "Exportar Vídeo",
+    "exportFailed": "Falha na exportação"
+  },
+  "timeline": {
+    "title": "Linha do Tempo",
+    "clipCount_one": "{{count}} clipe",
+    "clipCount_other": "{{count}} clipes",
+    "transitionCount_one": "{{count}} transição",
+    "transitionCount_other": "{{count}} transições",
+    "importing": "Importando..."
+  },
+  "transitions": {
+    "type": "Tipo de Transição",
+    "duration": "Duração",
+    "none": "Nenhuma",
+    "crossfade": "Dissolução",
+    "fadeBlack": "Fade Preto",
+    "fadeWhite": "Fade Branco",
+    "addTransition": "Adicionar transição",
+    "clipsTooShort": "Clipes muito curtos para transições"
+  }
+}
