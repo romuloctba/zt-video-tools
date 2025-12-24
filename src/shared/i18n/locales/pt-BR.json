@@ -30,5 +30,8 @@
     "fadeWhite": "Fade Branco",
     "addTransition": "Adicionar transição",
     "clipsTooShort": "Clipes muito curtos para transições"
+  },
+  "preview": {
+    "addVideosToStart": "Adicione vídeos para começar"
   }
 }

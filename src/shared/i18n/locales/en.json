@@ -30,5 +30,8 @@
     "fadeWhite": "Fade White",
     "addTransition": "Add transition",
     "clipsTooShort": "Clips too short for transitions"
+  },
+  "preview": {
+    "addVideosToStart": "Add videos to get started"
   }
 }
