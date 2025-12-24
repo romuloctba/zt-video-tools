@@ -1,6 +1,7 @@
 {
   "common": {
-    "appName": "Video Tools"
+    "appName": "Z Video Tools",
+    "footerText": "This is a free tool offered by <a aria-label=\"Go to Zoch Tecnologia's website. Loads in a new window\" target=\"_blank\" href=\"https://zochtecnologia.com.br\">Zoch Tecnologia</a>"
   },
   "dropzone": {
     "dropHere": "Drop videos here",
