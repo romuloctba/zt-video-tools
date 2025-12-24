@@ -53,3 +53,7 @@ Thumbs.db
 
 # Optional: ignore test output
 test-results/
+
+# Custom built files
+video-tools/
+video-tools.zip

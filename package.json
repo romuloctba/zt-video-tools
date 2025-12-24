@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:root": "VITE_BASE_PATH=/ tsc -b && VITE_BASE_PATH=/ vite build && sed -i '' 's|%VITE_BASE_PATH%|/|g' dist/index.html",
+    "build:video-tools": "VITE_BASE_PATH=/video-tools/ tsc -b && VITE_BASE_PATH=/video-tools/ vite build && sed -i '' 's|%VITE_BASE_PATH%|/video-tools/|g' dist/index.html",
     "lint": "eslint .",
     "preview": "vite preview"
   },
