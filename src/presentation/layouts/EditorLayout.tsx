@@ -19,7 +19,7 @@ export function EditorLayout({ preview, timeline }: EditorLayoutProps) {
       {/* Header */}
       <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-zinc-800">
         <div className="flex items-center gap-3">
-          <img src="/shield.svg" alt="Zoch Tecnologia" className="w-8 h-8 text-indigo-500" />
+          <img src="./shield.svg" alt="Zoch Tecnologia" className="w-8 h-8 text-indigo-500" />
           <h1 className="text-lg font-semibold text-white">{t('common.appName')}</h1>
         </div>
         <div className="flex items-center gap-4">
