@@ -15,6 +15,7 @@ No uploads, no data collection, it all runs in user's browser.
 - **Drag & Drop Import**: Support for MP4, WebM, MOV, AVI, MKV formats
 - **Timeline Management**: Intuitive clip arrangement and editing
 - **Real-time Preview**: Smooth playback with canvas rendering
+- **Text Overlays**: Add customizable text with support for custom fonts, styles (Bold/Italic), and direct manipulation
 - **Professional Transitions**: fade to black, fade to white effects
 - **Audio Crossfading**: Synchronized audio transitions between clips
 
@@ -80,15 +81,23 @@ No uploads, no data collection, it all runs in user's browser.
 - Adjust transition duration (0.5s to 2.0s)
 - Transitions create smooth overlaps between clips
 
-### 4. Preview Your Edit
+### 4. Add Text Overlays
+- **Add Text**: Click the text icon in the preview controls to add a new overlay
+- **Positioning**: Drag the text directly on the preview canvas to position it
+- **Styling**: Use the floating editor to change text, font family, size, and styles (Bold/Italic)
+- **Custom Fonts**: Upload your own `.ttf` or `.otf` files to use unique typography
+- **Timing**: Adjust the start and end times to control when the text appears
+
+### 5. Preview Your Edit
 - Use the play/pause button in the preview controls
 - Scrub through the timeline by clicking on the timeline
 - See real-time preview with smooth transitions
 
-### 5. Export Your Video
+### 6. Export Your Video
 - Click the "Export Video" button in the top-right
 - Wait for the export progress to complete
 - Download your edited video as WebM format
+
 
 ## 🏗️ Project Structure
 
@@ -147,7 +156,8 @@ This project follows **Clean Architecture** principles:
 - **Tailwind CSS**: Utility-first CSS framework
 - **Zustand**: Lightweight state management
 - **i18next**: Internationalization framework
-- **Canvas API**: Hardware-accelerated video rendering
+- **Canvas API**: Hardware-accelerated video and text rendering
+- **FontFace API**: Dynamic loading of custom user fonts
 
 ## 🌐 Internationalization
 
