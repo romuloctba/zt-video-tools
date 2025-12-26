@@ -130,4 +130,6 @@ export interface PreviewControlsProps {
   onPause: () => void;
   /** Callback to seek to specific time */
   onSeek: (time: number) => void;
+  /** Callback to add a new text overlay */
+  onAddText: () => void;
 }

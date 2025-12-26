@@ -19,7 +19,10 @@ import {
   getMaxTransitionDuration,
   DEFAULT_TRANSITION_DURATION,
 } from '@/domain/entities/Transition';
+import type { TextOverlay } from '@/domain/entities/TextOverlay';
+import { createTextOverlay } from '@/domain/entities/TextOverlay';
 import type { EntityId, OperationStatus, Progress, Seconds, VideoMetadata } from '@/domain/types';
+import { generateId } from '@/shared/utils/id';
 
 /**
  * Editor store state
@@ -31,12 +34,16 @@ interface EditorState {
   // Timeline
   timeline: Timeline;
 
+  // Text Overlays
+  textOverlays: Map<EntityId, TextOverlay>;
+
   // Playback
   currentTime: Seconds;
   isPlaying: boolean;
 
   // UI State
   selectedClipId: EntityId | null;
+  selectedTextOverlayId: EntityId | null;
 
   // Operations
   importStatus: OperationStatus;
@@ -62,6 +69,16 @@ interface EditorActions {
 
   // Timeline actions
   moveClip: (clipId: EntityId, newIndex: number) => void;
+
+  // Text Overlay actions
+  addTextOverlay: (params: {
+    text: string;
+    startTime: Seconds;
+    endTime: Seconds;
+  }) => void;
+  updateTextOverlay: (id: EntityId, updates: Partial<TextOverlay>) => void;
+  removeTextOverlay: (id: EntityId) => void;
+  selectTextOverlay: (id: EntityId | null) => void;
 
   // Transition actions
   setTransition: (
@@ -99,9 +116,11 @@ type EditorStore = EditorState & EditorActions;
 const initialState: EditorState = {
   clips: new Map(),
   timeline: createTimeline(),
+  textOverlays: new Map(),
   currentTime: 0,
   isPlaying: false,
   selectedClipId: null,
+  selectedTextOverlayId: null,
   importStatus: 'idle',
   exportStatus: 'idle',
   exportProgress: null,
@@ -145,6 +164,42 @@ export const useEditorStore = create<EditorStore>()(
         set((state) => ({
           timeline: moveClipInTimeline(state.timeline, clipId, newIndex),
         }));
+      },
+
+      // Text Overlay actions
+      addTextOverlay: (params) => {
+        const id = generateId();
+        const overlay = createTextOverlay({ id, ...params });
+        set((state) => ({
+          textOverlays: new Map(state.textOverlays).set(id, overlay),
+          selectedTextOverlayId: id,
+        }));
+      },
+
+      updateTextOverlay: (id, updates) => {
+        set((state) => {
+          const overlay = state.textOverlays.get(id);
+          if (!overlay) return state;
+          const updatedOverlay = { ...overlay, ...updates };
+          return {
+            textOverlays: new Map(state.textOverlays).set(id, updatedOverlay),
+          };
+        });
+      },
+
+      removeTextOverlay: (id) => {
+        set((state) => {
+          const newOverlays = new Map(state.textOverlays);
+          newOverlays.delete(id);
+          return {
+            textOverlays: newOverlays,
+            selectedTextOverlayId: state.selectedTextOverlayId === id ? null : state.selectedTextOverlayId,
+          };
+        });
+      },
+
+      selectTextOverlay: (id) => {
+        set({ selectedTextOverlayId: id });
       },
 
       // Transition actions

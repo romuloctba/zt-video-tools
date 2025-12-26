@@ -7,10 +7,11 @@ import { DEFAULT_EXPORT_WIDTH, DEFAULT_EXPORT_HEIGHT, DEFAULT_EXPORT_FRAME_RATE 
  * Hook for handling video export
  */
 export function useExport() {
-  const { getClipsInOrder, setExportStatus, setExportProgress } = useEditorStore();
+  const { getClipsInOrder, textOverlays, setExportStatus, setExportProgress } = useEditorStore();
 
   const exportVideo = useCallback(async (filename: string = 'exported-video.webm') => {
     const clips = getClipsInOrder();
+    const overlays = Array.from(textOverlays.values());
 
     if (clips.length === 0) {
       throw new Error('No clips to export');
@@ -27,6 +28,7 @@ export function useExport() {
     try {
       const blob = await VideoExporter.export({
         clips,
+        textOverlays: overlays,
         width: DEFAULT_EXPORT_WIDTH,
         height: DEFAULT_EXPORT_HEIGHT,
         frameRate: DEFAULT_EXPORT_FRAME_RATE,
@@ -42,7 +44,7 @@ export function useExport() {
       setExportProgress(null);
       throw error;
     }
-  }, [getClipsInOrder, setExportStatus, setExportProgress]);
+  }, [getClipsInOrder, textOverlays, setExportStatus, setExportProgress]);
 
   return { exportVideo };
 }

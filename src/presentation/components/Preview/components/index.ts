@@ -3,3 +3,4 @@
  */
 
 export { PreviewControls } from './PreviewControls';
+export { TextOverlayEditor } from './TextOverlayEditor';

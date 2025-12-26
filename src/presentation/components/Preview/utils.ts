@@ -4,7 +4,9 @@
  */
 
 import type { Transition } from '@/domain/entities/Transition';
+import type { TextOverlay } from '@/domain/entities/TextOverlay';
 import type { LetterboxDimensions } from './types';
+import { drawTextOverlay as sharedDrawTextOverlay } from '@/shared/utils/canvas';
 import {
   MIN_VIDEO_READY_STATE,
   CANVAS_BACKGROUND_COLOR,
@@ -238,4 +240,19 @@ export function renderTransition(
       // Fallback to crossfade for unknown types
       renderCrossfade(ctx, canvas, outgoingVideo, incomingVideo, progress);
   }
+}
+
+// =============================================================================
+// Text Overlay Utilities
+// =============================================================================
+
+/**
+ * Draws a text overlay onto the canvas using normalized coordinates
+ */
+export function drawTextOverlay(
+  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  overlay: TextOverlay
+): void {
+  sharedDrawTextOverlay(ctx, canvas.width, canvas.height, overlay);
 }

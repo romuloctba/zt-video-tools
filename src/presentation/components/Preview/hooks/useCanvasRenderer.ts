@@ -16,6 +16,7 @@ import {
   drawVideoFrame,
   drawPlaceholder,
   renderTransition,
+  drawTextOverlay,
 } from '../utils';
 import {
   CANVAS_BACKGROUND_COLOR,
@@ -97,6 +98,16 @@ export function useCanvasRenderer({
           );
         }
       }
+
+      // Draw active text overlays
+      state.textOverlays.forEach((overlay) => {
+        if (
+          state.currentTime >= overlay.startTime &&
+          state.currentTime <= overlay.endTime
+        ) {
+          drawTextOverlay(ctx, canvas, overlay);
+        }
+      });
 
       animationFrameRef.current = requestAnimationFrame(render);
     };
