@@ -21,9 +21,12 @@ export function Timeline() {
     setTransition,
     removeTransition,
     getTransition,
+    textOverlays,
+    selectTextOverlay,
   } = useEditorStore();
 
   const clips = getClipsInOrder();
+  const overlays = Array.from(textOverlays.values());
   const totalDuration = getTotalDuration();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -204,6 +207,23 @@ export function Timeline() {
           )}
         </div>
       </div>
+
+      {/* Text Overlays Track */}
+      {overlays.length > 0 && (
+        <div className="px-4 py-2 border-t border-zinc-800 bg-zinc-900/50">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2">
+            {overlays.map((overlay) => (
+              <button
+                key={overlay.id}
+                onClick={() => selectTextOverlay(overlay.id)}
+                className="flex-shrink-0 px-3 py-1 bg-indigo-900/40 border border-indigo-500/30 rounded text-xs text-indigo-300 hover:bg-indigo-900/60 transition-colors"
+              >
+                {overlay.text} ({formatTime(overlay.startTime)} - {formatTime(overlay.endTime)})
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

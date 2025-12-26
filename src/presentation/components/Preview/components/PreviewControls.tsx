@@ -74,6 +74,17 @@ function PauseIcon() {
   );
 }
 
+function TextIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* Sheet */}
+      <rect x="4" y="3" width="16" height="18" rx="2" ry="2" strokeWidth={2} />
+      {/* T */}
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 8h8M12 8v8" />
+    </svg>
+  );
+}
+
 // =============================================================================
 // Styles
 // =============================================================================
@@ -113,6 +124,7 @@ export function PreviewControls({
   onPlay,
   onPause,
   onSeek,
+  onAddText,
 }: PreviewControlsProps) {
   const handleSeekChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,6 +204,17 @@ export function PreviewControls({
           aria-label="Forward to end"
         >
           <ForwardIcon />
+        </button>
+
+        {/* Add Text */}
+        <button
+          onClick={onAddText}
+          disabled={!hasClips}
+          className={CONTROL_BUTTON_CLASSES}
+          aria-label="Add text overlay"
+          title="Add text overlay"
+        >
+          <TextIcon />
         </button>
       </div>
     </div>

@@ -1,10 +1,13 @@
 import type { Clip } from '@/domain/entities/Clip';
 import { getClipDuration } from '@/domain/entities/Clip';
+import type { TextOverlay } from '@/domain/entities/TextOverlay';
 import type { Progress } from '@/domain/types';
 import { ExportError } from '@/domain/errors';
+import { drawTextOverlay } from '@/shared/utils/canvas';
 
 export interface ExportOptions {
   clips: Clip[];
+  textOverlays: TextOverlay[];
   width: number;
   height: number;
   frameRate: number;
@@ -24,7 +27,7 @@ export class VideoExporter {
    * Exports concatenated clips to a video blob
    */
   static async export(options: ExportOptions): Promise<Blob> {
-    const { clips, width, height, frameRate, onProgress } = options;
+    const { clips, textOverlays, width, height, frameRate, onProgress } = options;
 
     if (clips.length === 0) {
       throw new ExportError('No clips to export');
@@ -82,7 +85,16 @@ export class VideoExporter {
         message: `Processing clip ${i + 1} of ${clips.length}: ${clip.name}`,
       });
 
-      await this.renderClip(clip, ctx, audioContext, audioDestination, width, height);
+      await this.renderClip(
+        clip,
+        textOverlays,
+        processedTime,
+        ctx,
+        audioContext,
+        audioDestination,
+        width,
+        height
+      );
 
       processedTime += getClipDuration(clip);
     }
@@ -112,6 +124,8 @@ export class VideoExporter {
    */
   private static async renderClip(
     clip: Clip,
+    textOverlays: TextOverlay[],
+    clipStartTime: number,
     ctx: CanvasRenderingContext2D,
     audioContext: AudioContext,
     audioDestination: MediaStreamAudioDestinationNode,
@@ -153,6 +167,17 @@ export class VideoExporter {
 
           // Draw video frame to canvas (with scaling)
           this.drawVideoToCanvas(video, ctx, width, height);
+
+          // Draw active text overlays
+          const currentGlobalTime = clipStartTime + (video.currentTime - clip.trimStart);
+          textOverlays.forEach((overlay) => {
+            if (
+              currentGlobalTime >= overlay.startTime &&
+              currentGlobalTime <= overlay.endTime
+            ) {
+              drawTextOverlay(ctx, width, height, overlay);
+            }
+          });
 
           requestAnimationFrame(renderFrame);
         };
