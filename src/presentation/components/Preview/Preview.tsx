@@ -88,9 +88,6 @@ export function Preview() {
           {/* Interaction Layer (Direct Manipulation) */}
           <PreviewInteractionLayer canvasRef={canvasRef} />
         </div>
-
-        {/* Text Overlay Editor (Floating) */}
-        <TextOverlayEditor />
       </div>
 
       {/* Controls */}
@@ -104,6 +101,9 @@ export function Preview() {
         onSeek={seek}
         onAddText={handleAddText}
       />
+
+      {/* Text Overlay Editor (Section) */}
+      <TextOverlayEditor />
     </div>
   );
 }
