@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useEditorStore } from '@/application/store/editorStore';
 import type { TextOverlay } from '@/domain/entities/TextOverlay';
 import { formatTime } from '@/shared/utils/time';
@@ -19,6 +20,7 @@ const FONT_FAMILIES = [
  * TextOverlayEditor - UI for editing text overlay properties
  */
 export function TextOverlayEditor() {
+  const editorRef = useRef<HTMLDivElement>(null);
   const selectedId = useEditorStore((s) => s.selectedTextOverlayId);
   const overlay = useEditorStore((s) => 
     selectedId ? s.textOverlays.get(selectedId) : null
@@ -29,6 +31,29 @@ export function TextOverlayEditor() {
   const removeTextOverlay = useEditorStore((s) => s.removeTextOverlay);
   const selectTextOverlay = useEditorStore((s) => s.selectTextOverlay);
   const totalDuration = useEditorStore((s) => s.getTotalDuration());
+
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Don't close if clicking the editor itself or the preview interaction layer
+      if (
+        editorRef.current && 
+        !editorRef.current.contains(target) && 
+        !target.closest('.preview-interaction-layer')
+      ) {
+        selectTextOverlay(null);
+      }
+    };
+
+    if (selectedId) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selectedId, selectTextOverlay]);
 
   const handleFontUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -59,7 +84,10 @@ export function TextOverlayEditor() {
   };
 
   return (
-    <div className="absolute top-4 right-4 w-64 bg-zinc-800/90 backdrop-blur-sm p-4 rounded-lg shadow-xl border border-zinc-700 z-10">
+    <div 
+      ref={editorRef}
+      className="absolute top-4 right-4 w-64 bg-zinc-800/90 backdrop-blur-sm p-4 rounded-lg shadow-xl border border-zinc-700 z-10"
+    >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-white">Edit Text</h3>
         <button

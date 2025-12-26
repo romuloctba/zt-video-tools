@@ -58,7 +58,7 @@ export function PreviewInteractionLayer({ canvasRef }: PreviewInteractionLayerPr
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-20 cursor-move touch-none"
+      className="absolute inset-0 z-20 cursor-move touch-none preview-interaction-layer"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
