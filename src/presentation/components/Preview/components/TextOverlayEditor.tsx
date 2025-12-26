@@ -2,6 +2,19 @@ import { useEditorStore } from '@/application/store/editorStore';
 import type { TextOverlay } from '@/domain/entities/TextOverlay';
 import { formatTime } from '@/shared/utils/time';
 
+const FONT_FAMILIES = [
+  'Inter',
+  'Roboto',
+  'Playfair Display',
+  'Montserrat',
+  'Arial',
+  'Times New Roman',
+  'Courier New',
+  'Georgia',
+  'Verdana',
+  'Impact',
+];
+
 /**
  * TextOverlayEditor - UI for editing text overlay properties
  */
@@ -10,10 +23,32 @@ export function TextOverlayEditor() {
   const overlay = useEditorStore((s) => 
     selectedId ? s.textOverlays.get(selectedId) : null
   );
+  const customFonts = useEditorStore((s) => s.customFonts);
+  const addCustomFont = useEditorStore((s) => s.addCustomFont);
   const updateTextOverlay = useEditorStore((s) => s.updateTextOverlay);
   const removeTextOverlay = useEditorStore((s) => s.removeTextOverlay);
   const selectTextOverlay = useEditorStore((s) => s.selectTextOverlay);
   const totalDuration = useEditorStore((s) => s.getTotalDuration());
+
+  const handleFontUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const fontName = file.name.split('.')[0];
+      const arrayBuffer = await file.arrayBuffer();
+      const fontFace = new FontFace(fontName, arrayBuffer);
+      
+      await fontFace.load();
+      document.fonts.add(fontFace);
+      
+      addCustomFont(fontName);
+      handleChange({ fontFamily: fontName });
+    } catch (err) {
+      console.error('Failed to load font:', err);
+      alert('Failed to load font file');
+    }
+  };
 
   if (!overlay) return null;
 
@@ -75,6 +110,68 @@ export function TextOverlayEditor() {
               className="w-full accent-indigo-500"
             />
           </div>
+        </div>
+
+        {/* Font Family */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-xs text-zinc-400">Font Family</label>
+            <label className="text-[10px] text-indigo-400 hover:text-indigo-300 cursor-pointer">
+              Upload Font
+              <input
+                type="file"
+                accept=".ttf,.otf,.woff,.woff2"
+                onChange={handleFontUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+          <select
+            value={overlay.fontFamily}
+            onChange={(e) => handleChange({ fontFamily: e.target.value })}
+            className="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-indigo-500"
+          >
+            <optgroup label="System Fonts">
+              {FONT_FAMILIES.map((font) => (
+                <option key={font} value={font} style={{ fontFamily: font }}>
+                  {font}
+                </option>
+              ))}
+            </optgroup>
+            {customFonts.length > 0 && (
+              <optgroup label="Custom Fonts">
+                {customFonts.map((font) => (
+                  <option key={font} value={font} style={{ fontFamily: font }}>
+                    {font}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+          </select>
+        </div>
+
+        {/* Font Style & Weight */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleChange({ fontWeight: overlay.fontWeight === 'bold' ? 'normal' : 'bold' })}
+            className={`flex-1 py-1 rounded border text-sm font-bold transition-colors ${
+              overlay.fontWeight === 'bold'
+                ? 'bg-indigo-600 border-indigo-500 text-white'
+                : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            B
+          </button>
+          <button
+            onClick={() => handleChange({ fontStyle: overlay.fontStyle === 'italic' ? 'normal' : 'italic' })}
+            className={`flex-1 py-1 rounded border text-sm italic transition-colors ${
+              overlay.fontStyle === 'italic'
+                ? 'bg-indigo-600 border-indigo-500 text-white'
+                : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            I
+          </button>
         </div>
 
         {/* Font Size & Color */}

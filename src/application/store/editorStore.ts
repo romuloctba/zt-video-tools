@@ -36,6 +36,7 @@ interface EditorState {
 
   // Text Overlays
   textOverlays: Map<EntityId, TextOverlay>;
+  customFonts: string[];
 
   // Playback
   currentTime: Seconds;
@@ -79,6 +80,7 @@ interface EditorActions {
   updateTextOverlay: (id: EntityId, updates: Partial<TextOverlay>) => void;
   removeTextOverlay: (id: EntityId) => void;
   selectTextOverlay: (id: EntityId | null) => void;
+  addCustomFont: (fontName: string) => void;
 
   // Transition actions
   setTransition: (
@@ -117,6 +119,7 @@ const initialState: EditorState = {
   clips: new Map(),
   timeline: createTimeline(),
   textOverlays: new Map(),
+  customFonts: [],
   currentTime: 0,
   isPlaying: false,
   selectedClipId: null,
@@ -200,6 +203,12 @@ export const useEditorStore = create<EditorStore>()(
 
       selectTextOverlay: (id) => {
         set({ selectedTextOverlayId: id });
+      },
+
+      addCustomFont: (fontName) => {
+        set((state) => ({
+          customFonts: [...new Set([...state.customFonts, fontName])],
+        }));
       },
 
       // Transition actions

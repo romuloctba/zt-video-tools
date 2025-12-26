@@ -10,6 +10,8 @@ export interface TextOverlay {
   readonly y: number; // Normalized 0-1
   readonly fontSize: number; // Base size in pixels (will be scaled)
   readonly fontFamily: string;
+  readonly fontWeight: 'normal' | 'bold';
+  readonly fontStyle: 'normal' | 'italic';
   readonly color: string;
   readonly startTime: Seconds;
   readonly endTime: Seconds;
@@ -25,6 +27,8 @@ export function createTextOverlay(params: {
   y?: number;
   fontSize?: number;
   fontFamily?: string;
+  fontWeight?: 'normal' | 'bold';
+  fontStyle?: 'normal' | 'italic';
   color?: string;
   startTime: Seconds;
   endTime: Seconds;
@@ -36,6 +40,8 @@ export function createTextOverlay(params: {
     y: params.y ?? 0.5,
     fontSize: params.fontSize ?? 32,
     fontFamily: params.fontFamily ?? 'Arial',
+    fontWeight: params.fontWeight ?? 'normal',
+    fontStyle: params.fontStyle ?? 'normal',
     color: params.color ?? '#ffffff',
     startTime: params.startTime,
     endTime: params.endTime,

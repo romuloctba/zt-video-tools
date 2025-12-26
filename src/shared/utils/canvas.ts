@@ -16,7 +16,7 @@ export function drawTextOverlay(
   const responsiveFontSize = (overlay.fontSize * canvasHeight) / 480;
 
   ctx.fillStyle = overlay.color;
-  ctx.font = `${responsiveFontSize}px ${overlay.fontFamily}`;
+  ctx.font = `${overlay.fontStyle} ${overlay.fontWeight} ${responsiveFontSize}px ${overlay.fontFamily}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 

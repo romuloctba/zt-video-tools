@@ -22,7 +22,7 @@ import { useEditorStore } from '@/application/store/editorStore';
 import { getTimelineDuration } from '@/domain/entities/Timeline';
 
 import { useVideoElements, useCanvasRenderer, usePlaybackSync } from './hooks';
-import { PreviewControls, TextOverlayEditor } from './components';
+import { PreviewControls, TextOverlayEditor, PreviewInteractionLayer } from './components';
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from './constants';
 
 /**
@@ -77,12 +77,17 @@ export function Preview() {
     <div className="flex flex-col h-full bg-zinc-900">
       {/* Canvas Area */}
       <div className="flex-1 flex items-center justify-center p-4 bg-black relative overflow-hidden">
-        <canvas
-          ref={canvasRef}
-          width={DEFAULT_CANVAS_WIDTH}
-          height={DEFAULT_CANVAS_HEIGHT}
-          className="max-w-full max-h-full rounded-lg shadow-2xl"
-        />
+        <div className="relative">
+          <canvas
+            ref={canvasRef}
+            width={DEFAULT_CANVAS_WIDTH}
+            height={DEFAULT_CANVAS_HEIGHT}
+            className="max-w-full max-h-full rounded-lg shadow-2xl"
+          />
+          
+          {/* Interaction Layer (Direct Manipulation) */}
+          <PreviewInteractionLayer canvasRef={canvasRef} />
+        </div>
 
         {/* Text Overlay Editor (Floating) */}
         <TextOverlayEditor />
